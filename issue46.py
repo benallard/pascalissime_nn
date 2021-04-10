@@ -3,6 +3,9 @@ The netword is about 8 x 8 neurons, with as much in the input layer
 as the input signal is, and same for output.
 """
 
+import torch
+from torch import nn
+
 SIGNAL = [0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20,
         0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20,
         0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.15, 0.20, 0.25,
@@ -16,4 +19,18 @@ SIGNAL = [0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20,
         0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20,
 ]
 
+LAYERS = 7
 
+class Issue46(nn.Module):
+    def __init__(self, n_layers):
+        super(Issue46, self).__init__()
+        self.layers = [nn.Linear(len(SIGNAL), len(SIGNAL)) for i in range(n_layers)]
+
+    def forward(self, xb):
+        for layer in self.layers:
+            xb = layer(xb)
+        return xb
+
+model = Issue46(LAYERS)
+out = model.forward(torch.tensor(SIGNAL))
+print(out)
