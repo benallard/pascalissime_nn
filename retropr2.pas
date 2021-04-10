@@ -483,5 +483,130 @@ begin
   write(g_nombre_essais, g_cumul_erreur / g_nombre_essais:10:3, '<RET>'); readln;
 end; (* go texte *)
 
+
+(* -- utilisation du reseau pour la prevision *)
+
+procedure prevois_resultat;
+var l_apprentissage: 1..k_apprentissage_max;
+	l_sortie : 1..k_sortie_max;
 begin
+  assign(g_texte_ecran, 'a:prevision.pas'); rewrite(g_texte_ecran);
+
+  for l_apprentissage := 1 to k_apprentissage_max do
+  begin
+    propage_vers_l_avant(l_apprentissage);
+    calcule_erreur_finale(l_apprentissage);
+    
+    g_capture_ecran := true;
+    affiche(1, l_apprentissage, avant);
+    g_capture_ecran := false;
+
+    gotoxy(1, 24); clreol;
+    for l_sortie := 1 to k_sortie_max do
+      begin
+	write(l_sortie);
+	with g_sortie[l_sortie] do
+	if abs(erreur_locale_brute) < k_seuil_erreur_prevision
+          then write('OK, ')
+          else write('NOK, ');
+      end;
+      stoppe;
+  end;
+
+  close(g_texte_ecran);
+end;
+
+(*$i icourbe *)
+(*$i idessin *)
+procedure initialise;
+var l_numero_apprentissage: integer;
+	l_entree, l_biais, l_intermediaire, l_sortie: integer;
+
+  procedure entre_apprentissage(p_entree_1, p_entree_2, p_entree_3, p_entree_4, p_entree_5, p_entree_6,
+	  p_sortie_1, p_sortie_2, p_sortie_3, p_sortie_4, p_sortie_5, p_sortie_6, p_sortie_7: real);
+  begin
+    g_apprentissage[l_numero_apprentissage].entree[1] := p_entree_1;
+    g_apprentissage[l_numero_apprentissage].entree[2] := p_entree_2;
+    g_apprentissage[l_numero_apprentissage].entree[3] := p_entree_3;
+    g_apprentissage[l_numero_apprentissage].entree[4] := p_entree_4;
+    g_apprentissage[l_numero_apprentissage].entree[5] := p_entree_5;
+    g_apprentissage[l_numero_apprentissage].entree[6] := p_entree_6;
+
+    g_apprentissage[l_numero_apprentissage].sortie_desiree[1] := p_sortie_1;
+    g_apprentissage[l_numero_apprentissage].sortie_desiree[2] := p_sortie_2;
+    g_apprentissage[l_numero_apprentissage].sortie_desiree[3] := p_sortie_3;
+    g_apprentissage[l_numero_apprentissage].sortie_desiree[4] := p_sortie_4;
+    g_apprentissage[l_numero_apprentissage].sortie_desiree[5] := p_sortie_5;
+    g_apprentissage[l_numero_apprentissage].sortie_desiree[6] := p_sortie_6;
+    g_apprentissage[l_numero_apprentissage].sortie_desiree[7] := p_sortie_7;
+
+    l_numero_apprentissage := l_numero_apprentissage + 1;
+  end;
+
+begin
+  l_numero_apprentissage := 1;
+
+  entre_apprentissage(1.0, 1.0, 1.0, 0.0, 0.0, 0.0,  0.9, 0.9, 0.9, 0.1, 0.1, 0.1, 0.1);
+  entre_apprentissage(0.0, 1.0, 0.0, 1.0, 1.0, 0.0,  0.1, 0.1, 0.1, 0.9, 0.9, 0.9, 0.1);
+  entre_apprentissage(1.0, 0.0, 0.0, 1.0, 0.0, 1.0,  0.1, 0.1, 0.1, 0.9, 0.1, 0.9, 0.9);
+
+  (* -- alternative, partitionnee
+  entre_apprentissage(1.0, 1.0, 0.0, 0.0, 0.0, 0.0,  0.9, 0.9, 0.1, 0.1, 0.1, 0.1, 0.1);
+  entre_apprentissage(0.0, 0.0, 1.0, 1.0, 0.0, 0.0,  0.1, 0.1, 0.9, 0.9, 0.1, 0.1, 0.1);
+  entre_apprentissage(1.0, 0.0, 0.0, 0.0, 1.0, 1.0,  0.1, 0.1, 0.1, 0.1, 0.9, 0.9, 0.1);
+  *)
+
+  fillchar(g_biais, sizeof(g_biais), 0);
+  fillchar(g_intermediaire, sizeof(g_intermediaire), 0);
+  fillchar(g_sortie, sizeof(g_sortie), 0);
+
+  if k_poids_initiaux_differents
+    then randomize;
+
+  for l_biais:= 1 to k_intermediaire_max + k_sortie_max do
+    g_biais[l_biais] := random;
+
+  for l_intermediaire := 1 to k_intermediaire_max do
+    with g_intermediaire[l_intermediaire] do
+    begin
+      for l_entree := 1 to k_entree_max do
+	poids[l_entree] := random;
+      transfert := @f_sigmoid;
+    end;
+
+  for l_sortie := 1 to k_sortie_max do
+    with g_sortie[l_sortie] do
+    begin
+      for l_intermediaire := 1 to k_intermediaire_max do
+	poids[l_intermediaire] := random;
+      transfert := @f_sigmoid;
+    end;
+
+  g_ensemble_essai := [1,2,3];
+  g_debug := detail;
+  g_graphique := false;
+  g_capture_ecran := true;
+  g_test := false;
+end;
+
+begin
+  clrscr;
+  initialise;
+  repeat
+    writeln;
+    write('Go texte, Prevois, Courbes, Dessin, Initialise, Quitte ?');
+    g_choix := readkey; write(g_choix);writeln;
+    case g_choix of
+      ' ': clrscr;
+      'g': go_texte;
+      'd': go_texte;
+      'c': go_texte;
+      'a': affiche_sigmoid;
+      'p': prevois_resultat;
+      'i': initialise;
+      't': if g_debug = detail
+      		then g_debug := cent_iterations
+      		else g_debug := detail;
+    end;
+  until g_choix = 'q';
 end.
