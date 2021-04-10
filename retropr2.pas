@@ -262,7 +262,7 @@ begin
   begin
     (* -- propage_vers_l_avant la sortie *)
     for l_intermediaire := 1 to k_intermediaire_max do
-      with g_intermediaire[l_intermediaire] do  
+      with g_intermediaire[l_intermediaire] do
       begin
 	somme := g_biais[l_intermediaire];
 	for l_entree := 1 to k_entree_max do
@@ -373,7 +373,7 @@ begin
       end;
 
     for l_sortie := 1 to k_sortie_max do
-      with g_sortie[l_sortie] do  
+      with g_sortie[l_sortie] do
       begin
         somme := g_biais[k_intermediaire_max + l_sortie];
 	for l_intermediaire := 1 to k_intermediaire_max do
@@ -433,7 +433,7 @@ begin
 	
 
 	propage_erreur_vers_l_arriere(l_apprentissage);
-	    
+	
 	if g_test and (l_apprentissage = 2)
 	  then begin
 	    g_capture_ecran := true;
@@ -471,7 +471,7 @@ begin
 	      affiche(l_passe, l_apprentissage, resultat);
 	    end;
       end;
-      l_passe := l_passe + 1;  
+      l_passe := l_passe + 1;
   until (l_passe > k_iteration_max)
   	or (abs(g_cumul_erreur / g_nombre_essais) < k_niveau_erreur_max);
 
@@ -496,7 +496,7 @@ begin
   begin
     propage_vers_l_avant(l_apprentissage);
     calcule_erreur_finale(l_apprentissage);
-    
+
     g_capture_ecran := true;
     affiche(1, l_apprentissage, avant);
     g_capture_ecran := false;
@@ -571,7 +571,7 @@ begin
     begin
       for l_entree := 1 to k_entree_max do
 	poids[l_entree] := random;
-      transfert := @f_sigmoid;
+      transfert := f_sigmoid;
     end;
 
   for l_sortie := 1 to k_sortie_max do
@@ -579,7 +579,7 @@ begin
     begin
       for l_intermediaire := 1 to k_intermediaire_max do
 	poids[l_intermediaire] := random;
-      transfert := @f_sigmoid;
+      transfert := f_sigmoid;
     end;
 
   g_ensemble_essai := [1,2,3];
@@ -600,7 +600,7 @@ begin
       ' ': clrscr;
       'g': go_texte;
       'd': go_texte;
-      'c': go_texte;
+      'c': go_courbe(0, 1, 0, 'a:sortie1.pas');
       'a': affiche_sigmoid;
       'p': prevois_resultat;
       'i': initialise;
