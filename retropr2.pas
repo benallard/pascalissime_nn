@@ -255,6 +255,233 @@ end; (* affiche *)
 
 (* -- l'apprentissage *)
 
+procedure propage_vers_l_avant(p_numero_apprentissage: integer);
+var l_entree, l_intermediaire, l_sortie: integer;
+begin
+  with g_apprentissage[p_numero_apprentissage] do
+  begin
+    (* -- propage_vers_l_avant la sortie *)
+    for l_intermediaire := 1 to k_intermediaire_max do
+      with g_intermediaire[l_intermediaire] do  
+      begin
+	somme := g_biais[l_intermediaire];
+	for l_entree := 1 to k_entree_max do
+	  somme := somme + poids[l_entree] * entree[l_entree];
+        sortie := transfert(somme);
+      end; (* for intermediaire *)
+
+    for l_sortie := 1 to k_sortie_max do
+      with g_sortie[l_sortie] do
+      begin
+	somme := g_biais[k_intermediaire_max + l_sortie];
+	for l_intermediaire := 1 to k_intermediaire_max do
+	  somme := somme + poids[l_intermediaire] * g_intermediaire[l_intermediaire].sortie;
+        sortie := transfert(somme);
+      end; (* for sortie *)
+  end;
+end;
+
+procedure calcule_erreur_finale(p_numero_apprentissage: integer);
+var l_sortie: integer;
+begin
+  with g_apprentissage[p_numero_apprentissage] do
+  begin
+    g_erreur_sortie := 0.0;
+
+    for l_sortie := 1 to k_sortie_max do
+      with g_sortie[l_sortie] do
+      begin
+	erreur_locale_brute := sortie_desiree[l_sortie] - sortie;
+	erreur_locale_ponderee := erreur_locale_brute * f_derivee_sigmoid(somme);
+
+	(* -- mise au point *)
+	demi_erreur_carree := 0.5 * sqr(erreur_locale_brute);
+        g_erreur_sortie := g_erreur_sortie + demi_erreur_carree;
+      end;
+    g_cumul_erreur := g_cumul_erreur + g_erreur_sortie;
+    g_nombre_essais := g_nombre_essais + 1;
+  end;
+end;
+
+procedure propage_erreur_vers_l_arriere(p_numero_apprentissage: integer);
+(* -- back prop *)
+var l_intermediaire, l_sortie: integer;
+begin
+  with g_apprentissage[p_numero_apprentissage] do
+  begin
+    (* -- erreur au niveau precedent *)
+    for l_intermediaire := 1 to k_intermediaire_max do
+      with g_intermediaire[l_intermediaire] do
+      begin
+	erreur_locale_ponderee := 0;
+	for l_sortie := 1 to k_sortie_max do
+	  erreur_locale_ponderee := erreur_locale_ponderee +
+		g_sortie[l_sortie].erreur_locale_ponderee * g_sortie[l_sortie].poids[l_intermediaire];
+	erreur_locale_ponderee := f_derivee_sigmoid(somme) * erreur_locale_ponderee;
+      end;
+  end;
+end;
+
+procedure ajuste_poids_sortie(p_numero_apprentissage: integer);
+(* -- ajuste les poids intermediaires / sortie *)
+var l_intermediaire, l_sortie: integer;
+begin
+  for l_sortie := 1 to k_sortie_max do
+    with g_sortie[l_sortie] do
+    begin
+      g_biais[k_intermediaire_max + l_sortie] := g_biais[k_intermediaire_max + l_sortie]
+      	+ erreur_locale_ponderee * 1.0;
+
+      for l_intermediaire := 1 to k_intermediaire_max do
+	poids[l_intermediaire] := poids[l_intermediaire]
+		+ erreur_locale_ponderee * g_intermediaire[l_intermediaire].sortie;
+    end;
+end;
+
+procedure ajuste_poids_intermediaire(p_numero_apprentissage: integer);
+(* -- ajuste les poids d'entree / intermediaire *)
+var l_entree, l_intermediaire: integer;
+begin
+  with g_apprentissage[p_numero_apprentissage] do
+    for l_intermediaire := 1 to k_intermediaire_max do
+      with g_intermediaire[l_intermediaire] do
+      begin
+        g_biais[l_intermediaire] := g_biais[l_intermediaire]
+		+ erreur_locale_ponderee * 1.0;
+        for l_entree := 1 to k_entree_max do
+          poids[l_entree] := poids[l_entree] + erreur_locale_ponderee * entree[l_entree];
+      end;
+end;
+
+procedure calcule_erreur_apres_back_prop(p_numero_apprentissage: integer);
+(* -- mise au point: verifie que back prop reduit l'erreur globale *)
+var l_entree, l_intermediaire, l_sortie: integer;
+begin
+  with g_apprentissage[p_numero_apprentissage] do
+  begin
+    (* -- propage_vers_l_avant la sortie *)
+    (* -- peut reutiliser somme et sortie, cars eront recalcule pour le prochain essai *)
+    for l_intermediaire := 1 to k_intermediaire_max do
+      with g_intermediaire[l_intermediaire] do
+      begin
+	somme := g_biais[l_intermediaire];
+	for l_entree := 1 to k_entree_max do
+          begin
+	    somme := somme + poids[l_entree] * entree[l_entree];
+          end;
+	sortie := transfert(somme);
+      end;
+
+    for l_sortie := 1 to k_sortie_max do
+      with g_sortie[l_sortie] do  
+      begin
+        somme := g_biais[k_intermediaire_max + l_sortie];
+	for l_intermediaire := 1 to k_intermediaire_max do
+	  somme := somme + poids[l_intermediaire] * g_intermediaire[l_intermediaire].sortie;
+        sortie := transfert(somme);
+      end;
+
+    (* -- difference entre desir et prevision *)
+    for l_sortie := 1 to k_sortie_max do
+      with g_sortie[l_sortie] do
+      begin
+	erreur_locale_brute := sortie_desiree[l_sortie] - sortie;
+	demi_erreur_carree := 0.5 * sqr(erreur_locale_brute);
+      end;
+  end;
+end;
+
+procedure go_texte;
+var l_sortie: integer;
+	l_numero_apprentissage, l_passe, l_apprentissage: integer;
+	l_ensemble_apprentissage: set of 1..k_apprentissage_max;
+begin
+  assign(g_texte_ecran, 'a:converge.pas'); rewrite(g_texte_ecran);
+
+  g_cumul_erreur := 0;
+  g_nombre_essais := 0;
+
+  g_capture_ecran := true;
+  affiche(1, 1, depart);
+  g_capture_ecran := false;
+
+  l_passe := 1;
+  repeat
+    if l_passe mod k_frequence_affichage = 0
+      then write('.');
+
+    l_ensemble_apprentissage := [];
+    for l_numero_apprentissage := 1 to k_apprentissage_max do
+      begin
+	repeat
+	  l_apprentissage := 1 + random(k_apprentissage_max);
+	until not (l_apprentissage in l_ensemble_apprentissage);
+	l_ensemble_apprentissage := l_ensemble_apprentissage + [l_apprentissage];
+
+	propage_vers_l_avant(l_apprentissage);
+	calcule_erreur_finale(l_apprentissage);
+
+	if g_test and (l_apprentissage = 2)
+	  then begin
+	    g_capture_ecran := true;
+	    affiche(l_passe, l_apprentissage, avant);
+	    g_capture_ecran := false;
+	  end
+	else
+	  if g_debug = detail
+            then affiche(l_passe, l_apprentissage, avant);
+	
+
+	propage_erreur_vers_l_arriere(l_apprentissage);
+	    
+	if g_test and (l_apprentissage = 2)
+	  then begin
+	    g_capture_ecran := true;
+	    affiche(l_passe, l_apprentissage, arriere);
+	    g_capture_ecran := false;
+	  end
+	else
+	  if g_debug = detail
+            then affiche(l_passe, l_apprentissage, arriere);
+
+	ajuste_poids_sortie(l_apprentissage);
+	ajuste_poids_intermediaire(l_apprentissage);
+	
+	if g_test and (l_apprentissage = 2)
+	  then begin
+	    g_capture_ecran := true;
+	    affiche(l_passe, l_apprentissage, ajuste);
+	    g_capture_ecran := false;
+	  end
+	else
+	  if g_debug = detail
+            then affiche(l_passe, l_apprentissage, ajuste);
+
+	calcule_erreur_apres_back_prop(l_apprentissage);
+	
+	if g_test and (l_apprentissage = 2)
+	  then begin
+	    g_capture_ecran := true;
+	    affiche(l_passe, l_apprentissage, resultat);
+	    g_capture_ecran := false;
+	  end
+	else
+	  if g_debug = detail
+            then begin
+	      affiche(l_passe, l_apprentissage, resultat);
+	    end;
+      end;
+      l_passe := l_passe + 1;  
+  until (l_passe > k_iteration_max)
+  	or (abs(g_cumul_erreur / g_nombre_essais) < k_niveau_erreur_max);
+
+  g_capture_ecran := true;
+  affiche(l_passe, l_apprentissage, resultat);
+  g_capture_ecran := false;
+
+  close(g_texte_ecran);
+  write(g_nombre_essais, g_cumul_erreur / g_nombre_essais:10:3, '<RET>'); readln;
+end; (* go texte *)
 
 begin
 end.
