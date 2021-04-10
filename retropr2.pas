@@ -148,17 +148,17 @@ begin
     if p_mouvement = avant
       then clrscr
       else gotoxy(1, 1);
-    writeln('ENTREE INTERMEDIAIRE SORTIE (Iteration: ', p_iteration:3,
-	    'text:', p_numero_apprentissage: 3, ')');
+    writeln('ENTREE     INTERMEDIAIRE               SORTIE (Iteration: ', p_iteration:3,
+	    ' test:', p_numero_apprentissage: 3, ')');
     case p_mouvement of
-      depart: write('INIT');
-      avant: write('AVANT');
-      arriere: write('ARRIE');
-      ajuste: write('AJUST');
-      resultat: write('RESU');
+      depart: write('INIT  ');
+      avant: write('AVANT ');
+      arriere: write('ARRIE ');
+      ajuste: write('AJUST ');
+      resultat: write('RESU  ');
     end;
-    writeln('bj wej tj f(tj) Bk, Wjk, Tk F(Tk) Sk S-f(Tk) 1/2err');
-    writeln('        f''(tj) f''err    Ek');
+    writeln(' bj   wij  tj   f(tj)     Bk    Wjk   Tk   F(Tk) Sk  S-f(Tk) 1/2err');
+    writeln('                 f''(tj) f''*err              Ek');
 
     for l_entree:= 1 to k_entree_max do
     begin
