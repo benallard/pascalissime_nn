@@ -19,7 +19,16 @@ SIGNAL = [0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20,
         0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20,
 ]
 
+MHF_WEIGHTS = [-0.1, -0.6, -0.3, 0.5, 1.1, 0.5, -0.3, -0.6, -0.1]
+BIAS = 0.02;
+
 LAYERS = 7
+
+class StaticLinearLayer(nn.Linear):
+    """ each neurone is identical, has 9 inputs, a bias and a pretty weird zero_one transfer_function """
+    def __init__(self, in_features, out_features):
+        super(MyLayer, self).__init__(in_features, out_features)
+        self.bias
 
 class Issue46(nn.Module):
     def __init__(self, n_layers):
@@ -32,5 +41,5 @@ class Issue46(nn.Module):
         return xb
 
 model = Issue46(LAYERS)
-out = model.forward(torch.tensor(SIGNAL))
+out = model(torch.tensor(SIGNAL))
 print(out)

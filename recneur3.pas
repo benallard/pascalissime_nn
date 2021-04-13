@@ -125,7 +125,7 @@ BEGIN
     FOR l_neurone := 0 TO k_signal_max DO
       WITH g_reseau[l_couche, l_neurone] DO
       BEGIN
-        biais := k_biais; poids := kt_table_poids; transfert := @zero_un;
+        biais := k_biais; poids := kt_table_poids; transfert := zero_un;
       END;
 
   affiche_signal('entree', 0);
@@ -160,7 +160,7 @@ BEGIN
     FOR l_neurone := 0 TO k_signal_max DO
       WITH g_reseau[l_couche, l_neurone] DO
       BEGIN
-        biais := k_biais; poids := kt_table_poids; transfert := @zero_un;
+        biais := k_biais; poids := kt_table_poids; transfert := zero_un;
       END;
 
   FOR l_couche := 1 TO k_couche_max DO
