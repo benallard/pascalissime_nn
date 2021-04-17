@@ -28,7 +28,9 @@ class StaticLinearLayer(nn.Linear):
     """ each neurone is identical, has 9 inputs, a bias and a pretty weird zero_one transfer_function """
     def __init__(self, in_features, out_features):
         super(MyLayer, self).__init__(in_features, out_features)
-        self.bias
+
+    def forward(self, xb):
+        return self.forward(xb).clamp(0,1)
 
 class Issue46(nn.Module):
     def __init__(self, n_layers):
@@ -37,7 +39,7 @@ class Issue46(nn.Module):
 
     def forward(self, xb):
         for layer in self.layers:
-            xb = layer(xb)
+            xb = layer(xb).clamp(0, 1)
         return xb
 
 model = Issue46(LAYERS)

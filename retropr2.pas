@@ -18,6 +18,7 @@ const k_entree_max=6;
 	k_iteration_max = 700;
 	k_niveau_erreur_max=0.05;
 	k_poids_initiaux_differents=false;
+	k_learning_rate = 1.0;
 
 	k_seuil_erreur_prevision=0.30;
 	k_frequence_affichage=3;
@@ -307,19 +308,16 @@ procedure propage_erreur_vers_l_arriere(p_numero_apprentissage: integer);
 (* -- back prop *)
 var l_intermediaire, l_sortie: integer;
 begin
-  with g_apprentissage[p_numero_apprentissage] do
-  begin
-    (* -- erreur au niveau precedent *)
-    for l_intermediaire := 1 to k_intermediaire_max do
-      with g_intermediaire[l_intermediaire] do
-      begin
-	erreur_locale_ponderee := 0;
-	for l_sortie := 1 to k_sortie_max do
-	  erreur_locale_ponderee := erreur_locale_ponderee +
+  (* -- erreur au niveau precedent *)
+  for l_intermediaire := 1 to k_intermediaire_max do
+    with g_intermediaire[l_intermediaire] do
+    begin
+      erreur_locale_ponderee := 0;
+      for l_sortie := 1 to k_sortie_max do
+        erreur_locale_ponderee := erreur_locale_ponderee +
 		g_sortie[l_sortie].erreur_locale_ponderee * g_sortie[l_sortie].poids[l_intermediaire];
-	erreur_locale_ponderee := f_derivee_sigmoid(somme) * erreur_locale_ponderee;
-      end;
-  end;
+      erreur_locale_ponderee := f_derivee_sigmoid(somme) * erreur_locale_ponderee;
+    end;
 end;
 
 procedure ajuste_poids_sortie(p_numero_apprentissage: integer);
@@ -330,7 +328,7 @@ begin
     with g_sortie[l_sortie] do
     begin
       g_biais[k_intermediaire_max + l_sortie] := g_biais[k_intermediaire_max + l_sortie]
-      	+ erreur_locale_ponderee * 1.0;
+      	+ erreur_locale_ponderee * k_learning_rate;
 
       for l_intermediaire := 1 to k_intermediaire_max do
 	poids[l_intermediaire] := poids[l_intermediaire]
@@ -347,7 +345,7 @@ begin
       with g_intermediaire[l_intermediaire] do
       begin
         g_biais[l_intermediaire] := g_biais[l_intermediaire]
-		+ erreur_locale_ponderee * 1.0;
+		+ erreur_locale_ponderee * k_learning_rate;
         for l_entree := 1 to k_entree_max do
           poids[l_entree] := poids[l_entree] + erreur_locale_ponderee * entree[l_entree];
       end;
