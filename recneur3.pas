@@ -92,12 +92,12 @@ BEGIN
     g_reseau[p_couche_sortie, l_indice_resultat].sortie := l_resultat;
   END; (* FOR *)
 
-  (* -- traitement special du debut: ... *) 
+  (* -- traitement special du debut: ... *)
   l_resultat := g_reseau[p_couche_sortie, l_debut_resultat].sortie;
   FOR l_indice_resultat := 0 TO l_debut_resultat + 1 DO
     g_reseau[p_couche_sortie, l_indice_resultat].sortie := l_resultat;
 
-  (* -- traitement special de la fin: ... *) 
+  (* -- traitement special de la fin: ... *)
   l_resultat := g_reseau[p_couche_sortie, l_debut_resultat].sortie;
   FOR l_indice_resultat := l_fin_resultat + 1 TO k_signal_max DO
     g_reseau[p_couche_sortie, l_indice_resultat].sortie := l_resultat;
@@ -166,7 +166,7 @@ BEGIN
   FOR l_couche := 1 TO k_couche_max DO
   BEGIN
     propage_signal(l_couche);
-  
+
     initialise_mode_graphique;
     dessine(100, 0);
     dessine(200, l_couche);

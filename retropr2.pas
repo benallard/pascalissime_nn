@@ -17,7 +17,7 @@ const k_entree_max=6;
 	(* -- en mode graphique *)
 	k_iteration_max = 700;
 	k_niveau_erreur_max=0.05;
-	k_poids_initiaux_differents=false;
+	k_poids_initiaux_differents=true;
 	k_learning_rate = 1.0;
 
 	k_seuil_erreur_prevision=0.30;
@@ -597,7 +597,7 @@ begin
     case g_choix of
       ' ': clrscr;
       'g': go_texte;
-      'd': go_texte;
+      'd': go_dessin;
       'c': go_courbe(0, 1, 0, 'a:sortie1.pas');
       'a': affiche_sigmoid;
       'p': prevois_resultat;

@@ -17,9 +17,17 @@ UNIT uimpri;
 
     PROCEDURE initialise_mode_graphique;
       VAR l_carte, l_mode: INTEGER;
+          l_err: ShortInt;
       BEGIN
-        l_carte := DETECT;
+        l_carte := D8bit;
+	l_mode := m640x480;
 	INITGRAPH(l_carte, l_mode, '');
+        l_err := graphResult;
+        if (l_err <> grOk) then
+          begin
+            writeln('640x480x256 not supported');
+            halt(1);
+          end;
       END;
 
     PROCEDURE imprime_avec_tampon(p_nom_fichier: STRING);
