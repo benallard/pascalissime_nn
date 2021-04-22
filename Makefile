@@ -1,10 +1,12 @@
-all: recneur3 retropr2 robotl1 kohonen3 carre3
+all: recneur3 retropr2 robotl1 kohonen3 carre3 unun
 
 recneur3: uimpri.o
 retropr2: uimpri.o
 robotl1: uimpri.o uaffiche.o ustoppe.o
 kohonen3: uimpri.o uaffiche.o ustoppe.o
 carre3: uimpri.o uaffiche.o ustoppe.o
+unun: uimpri.o uaffiche.o ustoppe.o
+
 
 %.o: %.pas
 	fpc -Mtp $<
@@ -15,4 +17,4 @@ carre3: uimpri.o uaffiche.o ustoppe.o
 phony: clean all
 
 clean:
-	$(RM) *.o retropr2 recneur3 robotl1 kohonen3 carre3
+	$(RM) *.o retropr2 recneur3 robotl1 kohonen3 carre3 unun
