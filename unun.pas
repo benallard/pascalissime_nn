@@ -5,7 +5,7 @@
 
 (*$r+*)
 program reseau_rneuronal_kohonen;
-uses Crt, ptcGraph,
+uses cthreads, Crt, ptcGraph,
         uimpri, uaffiche, ustoppe;
 const (* -- le nombre de points de la couche de kohonen *)
         k_indice_max = 30;
@@ -20,7 +20,7 @@ const (* -- le nombre de points de la couche de kohonen *)
 
         (* -- un gros coefficient accelere l'ajustement *)
         (* -- 0.9: nouge trop, 0.1: tres lent *)
-        k_accelere_apprentissage = 0.50;
+        k_accelere_apprentissage = 0.30;
         k_attenue_apprentissage = k_accelere_apprentissage / k_iteration_max;
 
         (* -- un gros coefficient ralentit la modification des points lointains *)
@@ -73,7 +73,7 @@ var l_iteration: Integer;
           Line(k_x_debut + l_indice * k_echelle div k_indice_max,
                k_y_debut + Round(poids_y * k_echelle),
                k_x_debut + (l_indice + 1) * k_echelle div k_indice_max,
-               k_y_debut + Round(g_kohonen[l_indice + 1].poids_y));
+               k_y_debut + Round(g_kohonen[l_indice + 1].poids_y * k_echelle));
     end; (* dessine_reseau *)
 
     procedure affiche_coefficients;
@@ -94,7 +94,7 @@ var l_iteration: Integer;
 
       (* -- eventuellement place dans un fichier pour impression *)
       affiche_chaine(300, 300, 'tapez touche', 12);
-      l_imprime := ReadKey;
+      //l_imprime := ReadKey;
 
 
 
