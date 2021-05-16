@@ -10,10 +10,10 @@ voyage4: uimpri.o uaffiche.o ustoppe.o
 
 
 %.o: %.pas
-	fpc -Mtp $<
+	fpc -Mtp -g $<
 
 %: %.pas
-	fpc -Mtp $@
+	fpc -Mtp -g $@
 
 phony: clean all
 

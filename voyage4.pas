@@ -85,15 +85,15 @@ var l_iteration: Integer;
           begin
             dessine_croix(Round(k_echelle * x_ville), Round(k_echelle * y_ville), LightRed);
             if affiche_numero
-              then affiche_entier(k_y_debut + Round(k_echelle * y_ville) - 10,
-                k_x_debut + Round(k_echelle * x_ville) - 4, l_ville, 1);
+              then affiche_entier(k_x_debut + Round(k_echelle * x_ville) - 10,
+                k_y_debut + Round(k_echelle * y_ville) - 4, l_ville, 1);
           end;
 
         for l_indice := 1 to indice_max do
           with g_kohonen[l_indice] do
           begin
             dessine_croix(Round(k_echelle * poids_x), Round(k_echelle * poids_y), White);
-            if (l_indice > indice_max) and ((l_essai - 1) mod 100 = 0)
+            if (l_indice < indice_max)
               then Line(k_x_debut + Round(k_echelle * poids_x),
                         k_y_debut + Round(k_echelle * poids_y),
                         k_x_debut + Round(k_echelle * g_kohonen[l_indice + 1].poids_x),
@@ -118,8 +118,8 @@ var l_iteration: Integer;
                 1 / (ralentis_lointains - attenue_lointains * (l_iteration - 1)), 10, 6);
         affiche(240 + 60, 5, 'apprentissage:  ',
                 (accelere_apprentissage - attenue_apprentissage * l_iteration), 10, 6);
-        affiche(240 + 72, 5, 'k_iter_max:     ', k_iteration_max, 9, 0);
-        affiche(240 + 84, 5, 'coef conscience:', conscience_max, 9, 3);
+        affiche(240 + 72, 5, 'k_iter_max:     ', k_iteration_max, 10, 0);
+        affiche(240 + 84, 5, 'coef conscience:', conscience_max, 10, 3);
 
         if affiche_calculs or (l_essai mod 100 = 0)
           then begin
@@ -250,7 +250,7 @@ var l_iteration: Integer;
             dessine_croix(Round(k_echelle * l_x), Round(k_echelle * l_y), Red);
             (* -- le point le plus proche *)
             with g_kohonen[l_indice_min] do
-              dessine_croix(Round(k_echelle * poids_y), Round(k_echelle * poids_y), LightBlue);
+              dessine_croix(Round(k_echelle * poids_x), Round(k_echelle * poids_y), LightBlue);
           end;
       end; (* balaye ville *)
     end; (* with *)
@@ -319,7 +319,7 @@ begin (* initialise *)
 
 
 
-  (* -- ok converge, presente dand l'article *)
+  (* -- ok converge, presente dans l'article *)
   cree_exemple(6, 4, 0.20, 2, 0.03, 0.01, 0.7, 100, True, False);
 
 
@@ -328,6 +328,8 @@ begin (* initialise *)
 
 
 
+  (* -- ok, grace a voisins_max, presente dans l'article *)
+  cree_exemple(25, 13, 0.20, 1, 0.05, 0.02, 0.5, 4, False, False);
 
 
 
@@ -335,9 +337,7 @@ begin (* initialise *)
 
 
 
-
-
-
+  Randomize;
   with g_exemple[g_numero_exemple] do
   begin
     for l_indice_saute := 1 to saute_max do
