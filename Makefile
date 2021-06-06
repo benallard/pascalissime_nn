@@ -1,4 +1,4 @@
-all: recneur3 retropr2 robotl1 kohonen3 carre3 unun voyage4
+all: recneur3 retropr2 robotl1 kohonen3 carre3 unun voyage4 art14
 
 recneur3: uimpri.o
 retropr2: uimpri.o
@@ -18,4 +18,4 @@ voyage4: uimpri.o uaffiche.o ustoppe.o
 phony: clean all
 
 clean:
-	$(RM) *.o retropr2 recneur3 robotl1 kohonen3 carre3 unun voyage4
+	$(RM) *.o retropr2 recneur3 robotl1 kohonen3 carre3 unun voyage4 art14

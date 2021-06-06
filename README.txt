@@ -18,4 +18,6 @@ Issue48:
 Issue49:
  - voyage4: Applying kohonen to the traveler's problem.
 
+Issue50:
+ - art14: Adaptative Resonance Theory: classification and recognition of characters.
 
