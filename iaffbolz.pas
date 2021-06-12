@@ -11,7 +11,7 @@ procedure dumpe_ecran;
   var g_ecran: array[1..25, 1..80] of
         record
           caractere: Char; attribut: Byte
-        end absolute $B800:$0000;
+        end {absolute $B800:$0000};
       l_ligne, l_colonne: Integer;
       l_fichier: Text;
   begin
@@ -21,14 +21,14 @@ procedure dumpe_ecran;
     begin
       for l_colonne := 1 to 80 do
         Write(l_fichier, g_ecran[l_ligne, l_colonne].caractere);
-      WriteLn(l_fichier;)
+      WriteLn(l_fichier);
     end;
     Close(l_fichier);
     k_numero_fichier := Succ(k_numero_fichier);
   end;
 
 procedure stoppe_niveau(p_niveau: Integer);
-  var l_stop: Char
+  var l_stop: Char;
   begin
     if p_niveau >= g_niveau
       then begin
@@ -53,7 +53,7 @@ procedure affiche_le_reseau(p_niveau: Integer);
         Write(valeur_sortie:1, ' ':10);
         for l_connexion := 1 to k_neurone_max do
           if l_connexion <= p_neurone
-            then Write('   -    ');
+            then Write('   -    ')
             else Write(poids[l_connexion]:7:3);
       end;
     end;
@@ -87,7 +87,7 @@ function f_ligne_neurone(p_neurone: Integer): Integer;
   end;
 
 procedure affiche_les_co_occurences(p_ligne: Integer; p_co_occurence: t_co_occurence; p_niveau: Integer);
-  var l_neurone: Integer;
+  var l_neurone, l_connexion: Integer;
   begin
     if p_niveau >= g_niveau
       then
