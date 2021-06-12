@@ -21,3 +21,5 @@ Issue49:
 Issue50:
  - art14: Adaptative Resonance Theory: classification and recognition of characters.
 
+Issue51:
+ - bam: Associative neural networtk
