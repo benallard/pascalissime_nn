@@ -23,3 +23,4 @@ Issue50:
 
 Issue51:
  - bam: Associative neural networtk
+ - chiffres: Hopfield Network for digit recognition.
