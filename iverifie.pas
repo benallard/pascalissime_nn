@@ -53,7 +53,7 @@ procedure verifie_resultats;
         end;
       end;
 
-    procedure affectue_un_programme_de_recuit_neurones_entree_figes;
+    procedure effectue_un_programme_de_recuit_neurones_entree_figes;
       var l_pallier, l_iteration: Integer;
       begin
         for l_pallier :=  1 to k_pallier_recuit_max do
@@ -86,7 +86,7 @@ procedure verifie_resultats;
       begin
         (* -- la valeur attendue *)
         GotoXY(7, f_ligne_neurone(k_entree_max + l_sortie));
-        Write(k_exemplaite[l_exemplaire, k_entree_max + l_sortie], '*');
+        Write(k_exemplaire[l_exemplaire, k_entree_max + l_sortie], '*');
 
         if g_reseau[k_entree_max + l_sortie].valeur_sortie = 
               k_exemplaire[l_exemplaire, k_entree_max + l_sortie]
@@ -110,7 +110,7 @@ begin (* verifie_resultats *)
   FillChar(l_statistiques, SizeOf(l_statistiques), 0);
   FillChar(l_statistique_exemplaires, SizeOf(l_statistique_exemplaires), 0);
 
-  for l_essai := 1 to k_cycle_verification do
+  for l_essai := 1 to k_cycles_verification do
   begin
     GotoXY(6, 1); Write(l_essai:3);
     calcule_avec_neurones_entree_figes;
