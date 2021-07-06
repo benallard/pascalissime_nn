@@ -381,7 +381,30 @@ procedure go;
     ClrScr;
     initialise_les_poids;
     affiche_le_reseau(6); stoppe_niveau(1);
-  end;
+    g_energie_moyenne := 0; g_difference_moyenne := 0;
+
+    for l_essai := 1 to k_cycles_apprentissage do
+    begin
+      GotoXY(1, 1); Write('ENTRAINE', l_essai:3, '/', k_cycles_apprentissage);
+      FillChar(g_co_occurence_fige, SizeOf(g_co_occurence_fige), 0);
+      FillChar(g_co_occurence_libre, SizeOf(g_co_occurence_libre), 0);
+
+      entraine_le_reseau;
+      GotoXY(50, 2); Write( - g_energie_moyenne / l_essai * k_exemplaire_max :6:2,
+          g_difference_moyenne / l_essai:8:2);
+
+      if (l_essai + 1) mod k_periodicite_affichage = 0
+        then begin
+            affiche_le_reseau(5);
+            affiche_toutes_co_occurences(3, 9, 15, 5); stoppe_niveau(5);
+          end;
+    end;
+
+    affiche_le_reseau(5);
+    affiche_toutes_co_occurences(3, 9, 15, 5); stoppe_niveau(5);
+
+    verifie_resultats;
+  end; (* go *)
 
 procedure essai_proba;
   var l_valeur: Integer;
