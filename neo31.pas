@@ -383,7 +383,7 @@ procedure go;
           for l_i := 1 to k_poids_1 do
             for l_j := 1 to k_poids_1 do
               l_somme_inhibition := l_somme_inhibition
-                  + g_couche_0[p_x + l_i - 1, p_y + l_j - 1]
+                  + g_couche_0[p_y + l_i - 1, p_x + l_j - 1]
                   * distance_1[l_i, l_j];
           l_somme_inhibition := poids_inhibe_1 * Sqrt(l_somme_inhibition);
 
@@ -394,10 +394,10 @@ procedure go;
             then l_valeur := k_selectivite_1 * l_valeur
             else l_valeur := 0;
 
-          GotoXY(40 + p_x + l_j - 1, p_y + l_i - 1);
+          GotoXY(40 + p_x + 3 - 1, p_y + 2 - 1);
           if l_valeur > 0
             then Write(1)
-            else Write(0);  
+            else Write(0);
         end;
       end;
 
