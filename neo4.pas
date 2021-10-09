@@ -273,6 +273,51 @@ procedure go;
       begin
         charge_motif(k_cote_motif_1);
         copie_motif;
+        affiche_couche_0(1, 1, k_cote_motif_1);
+
+        for l_cycle := 1 to k_cycles_apprentissage_1 do
+          ajuste_poids_1(l_plan);
       end;
-      
-    end;
+
+      Close(l_fichier_motifs);
+    end; (* entraine_S_1 *)
+
+  procedure entraine_s_2;
+    const k_cote_motif_2 = 10;
+
+    procedure initialise_les_poids_2;
+      var l_plan_1, l_plan_2, l_x, l_y: Integer;
+          l_total: Real;
+      begin
+        with g_couche_S_2 do
+        begin
+          for l_plan_2 := 1 to k_plan_2 do
+            with plans_2[l_plan_2] do
+            begin
+              for l_plan_1 := 1 to k_plan_1 do
+                for l_y := 1 to k_cote_motif_1 do
+                  for l_x := 1 to k_cote_motif_1 do
+                    poids_2[l_plan_1, l_y, l_x] := 0;
+              poids_inhibe_2 := 0;
+            end;
+          
+          poids_plan_inhibe_2[1, 1] := 1;
+          poids_plan_inhibe_2[1, 3] := 1;
+          poids_plan_inhibe_2[3, 1] := 1;
+          poids_plan_inhibe_2[3, 3] := 1;
+          poids_plan_inhibe_2[1, 2] := 1.5;
+          poids_plan_inhibe_2[2, 1] := 1.5;
+          poids_plan_inhibe_2[2, 3] := 1.5;
+          poids_plan_inhibe_2[3, 2] := 1.5;
+          poids_plan_inhibe_2[2, 2] := 2;
+          l_total := 0;
+          for l_y := 1 to k_poids_2 do
+            for l_x := 1 to k_poids_2 do
+              l_total := l_total + Sqr(poids_plan_inhibe_2[l_y, l_x]);
+          l_total := Sqrt(l_total);
+
+          for l_y := 1 to k_poids_2 do
+            for l_x := 1 to k_poids_2 do
+              poids_plan_inhibe_2[l_y, l_x] := poids_plan_inhibe_2[l_y, l_x] / l_total;
+        end;
+      end;

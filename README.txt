@@ -29,4 +29,7 @@ Issue52:
  - bolzdem3: Boltzmann Network
 
 Issue53:
- - neo31: Training of the first layer of a neocognitron: recognition of elementary segments
+ - neo31: Training of the first layer of a neocognitron: recognition of elementary segments (layer 1)
+
+Issue 54:
+ - neo4: neocognitron layer two and three
