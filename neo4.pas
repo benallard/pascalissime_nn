@@ -562,95 +562,207 @@ procedure go;
       var l_plan_1, l_plan_2: Integer;
           l_x, l_y: Integer;
 
-        procedure filtre_2(p_plan, p_x, p_y: Integer);
-          (* -- verifie si l'image comport cet exemplaire en p_x, p_y *)
-          var l_plan_1, l_x, l_y: Integer;
-              l_somme: Real;
-              l_somme_inhibition: Real;
-              l_valeur: Real;
+      procedure filtre_2(p_plan, p_x, p_y: Integer);
+        (* -- verifie si l'image comport cet exemplaire en p_x, p_y *)
+        var l_plan_1, l_x, l_y: Integer;
+            l_somme: Real;
+            l_somme_inhibition: Real;
+            l_valeur: Real;
+        begin
+          with g_couche_S_2, plans_2[p_plan] do
           begin
-            with g_couche_S_2, plans_2[p_plan] do
-            begin
-              l_somme := 0;
-              GotoXY(1, 24); ClrEol;
+            l_somme := 0;
+            GotoXY(1, 24); ClrEol;
 
-              for l_plan_1 := 1 to k_plan_1 do
-                for l_y := 1 to k_poids_2 do
-                  for l_x := 1 to k_poids_2 do
-                    l_somme := l_somme
-                      + g_couche_S_1.plans_1[l_plan_1].sortie_1[p_y + l_y - 1, p_x + l_x - 1]
-                        * g_poids_2[l_plan_1, l_y, l_x];
+            for l_plan_1 := 1 to k_plan_1 do
+              for l_y := 1 to k_poids_2 do
+                for l_x := 1 to k_poids_2 do
+                  l_somme := l_somme
+                    + g_couche_S_1.plans_1[l_plan_1].sortie_1[p_y + l_y - 1, p_x + l_x - 1]
+                      * poids_2[l_plan_1, l_y, l_x];
 
-              l_somme_inhibition := 0;
-              for l_plan_1 := 1 to k_plan_1 do
-                for l_y := 1 to k_poids_2 do
-                  for l_x := 1 to k_poids_2 do
-                    l_somme_inhibition := l_somme_inhibition
-                      + g_couche_S_1.plans_1[l_plan_1].sortie_1[p_y + l_y - 1, p_x + l_x - 1]
-                      * poids_plan_inhibe_2[l_y, l_x];
-              l_somme_inhibition := poids_inhibe_2 * Sqrt(l_somme_inhibition);
+            l_somme_inhibition := 0;
+            for l_plan_1 := 1 to k_plan_1 do
+              for l_y := 1 to k_poids_2 do
+                for l_x := 1 to k_poids_2 do
+                  l_somme_inhibition := l_somme_inhibition
+                    + g_couche_S_1.plans_1[l_plan_1].sortie_1[p_y + l_y - 1, p_x + l_x - 1]
+                    * poids_plan_inhibe_2[l_y, l_x];
+            l_somme_inhibition := poids_inhibe_2 * Sqrt(l_somme_inhibition);
 
-              l_valeur := (1 + l_somme) / (1 + k_selectivite_2 / (1 + k_selectivite_2)
-                * l_somme_inhibition) - 1;
+            l_valeur := (1 + l_somme) / (1 + k_selectivite_2 / (1 + k_selectivite_2)
+              * l_somme_inhibition) - 1;
 
-              GotoXY(1, 25); Write(l_somme : 8 : 3, l_somme_inhibition : 8 : 3, l_valeur : 8 : 3);
+            GotoXY(1, 25); Write(l_somme : 8 : 3, l_somme_inhibition : 8 : 3, l_valeur : 8 : 3);
 
-              GotoXY(63 + p_x - 1, p_y);
-              if l_valeur > 0
-                then begin
-                    Write('Z');
-                    sortie_2[p_y, p_x] := l_valeur * k_selectivite_2;
-                  end
-                else begin
-                    Write(',');
-                    sortie_2[p_y, p_x] := 0;
-                  end;
-            end;
-          end;
-
-        procedure affiche_sortie_1(p_plan_1: Integer);
-          var l_x, l_y: Integer;
-          begin
-            with g_couche_S_1.plans_1[p_plan_1] do
-              for l_y := 1 to 5 do
-                for l_x := 1 to 8 do
-                begin
-                  GotoXY(20 + l_x + (p_plan_1 - 1) div 3 * 11,
-                    3 + l_y + ((p_plan_1 - 1) mod 3) * 8);
-                  if sortie_1[l_y, l_x] > 0
-                    then Write('o')
-                    else Write('-');
+            GotoXY(63 + p_x - 1, p_y);
+            if l_valeur > 0
+              then begin
+                  Write('Z');
+                  sortie_2[p_y, p_x] := l_valeur * k_selectivite_2;
+                end
+              else begin
+                  Write(',');
+                  sortie_2[p_y, p_x] := 0;
                 end;
           end;
+        end;
 
-        procedure affiche_sortie_2(p_plan_2: Integer);
-          var l_x, l_y: Integer;
-          begin
-            with g_couche_S_2.plans_2[p_plan_2] do
-              for l_y := 1 to k_S_0 - 4 do
+      procedure affiche_sortie_1(p_plan_1: Integer);
+        var l_x, l_y: Integer;
+        begin
+          with g_couche_S_1.plans_1[p_plan_1] do
+            for l_y := 1 to 5 do
+              for l_x := 1 to 8 do
               begin
-                GotoXY(63, l_y);
-                for l_x := 1 to k_S_0 - 4 do
-                begin
-                  if sortie_12[l_y, l_x] > 0
-                    then Write('M')
-                    else Write('+');
-                end;
+                GotoXY(20 + l_x + (p_plan_1 - 1) div 3 * 11,
+                  3 + l_y + ((p_plan_1 - 1) mod 3) * 8);
+                if sortie_1[l_y, l_x] > 0
+                  then Write('o')
+                  else Write('-');
               end;
-          end;
+        end;
 
+      procedure affiche_sortie_2(p_plan_2: Integer);
+        var l_x, l_y: Integer;
+        begin
+          with g_couche_S_2.plans_2[p_plan_2] do
+            for l_y := 1 to k_S_0 - 4 do
+            begin
+              GotoXY(63, l_y);
+              for l_x := 1 to k_S_0 - 4 do
+              begin
+                if sortie_2[l_y, l_x] > 0
+                  then Write('M')
+                  else Write('+');
+              end;
+            end;
+        end;
+
+      procedure affiche_partie_plans_1_en_inverse(p_x, p_y: Integer);
+        var l_x, l_y: Integer;
+            l_plan_1: Integer;
+            l_poids_2: Boolean;
+        begin
+          if (p_x <= 6) and (p_y <= 3)
+            then begin
+                TextColor(Black); TextBackGround(White);
+
+                for l_plan_1 := 1 to 12 do
+                begin
+                  with g_couche_S_1.plans_1[l_plan_1] do
+                    for l_y := 1 to 3 do
+                    begin
+                      GotoXY(20 + (l_plan_1 - 1) div 3 * 11 + p_x,
+                        p_y - 1 + 3 + l_y + ((l_plan_1 - 1) mod 3) * 8);
+                      for l_x := 1 to 3 do
+                      begin
+                        l_poids_2 := g_couche_S_2.plans_2[1].poids_2[l_plan_1, l_y, l_x] > 0;
+
+                        if sortie_1[p_y + l_y - 1, p_x + l_x - 1] > 0
+                         then
+                           if l_poids_2
+                             then Write('O')
+                             else Write('o')
+                          else
+                            if l_poids_2
+                              then Write('.')
+                              else Write('-');
+                      end;
+                    end;
+                end;
+
+                TextColor(White); TextBackGround(Black);
+              end;
+        end;
+
+      procedure affiche_partie_plans_1_en_normal(p_x, p_y: Integer);
+        var l_x, l_y: Integer;
+            l_plan_1: Integer;
+        begin
+          if (p_x <= 6) and (p_y <= 3)
+            then
+              for l_plan_1 := 1 to 12 do
+              begin
+                with g_couche_S_1.plans_1[l_plan_1] do
+                  for l_y := 1 to 3 do
+                  begin
+                    GotoXY(20 + (l_plan_1 - 1) div 3 * 11 + p_x,
+                      p_y - 1 + 3 + l_y + ((l_plan_1 - 1) mod 3) * 8);
+                    for l_x := 1 to 3 do
+                      if sortie_1[p_y + l_y - 1, p_x + l_x - 1] > 0
+                        then Write('o')
+                        else Write('-');
+                  end;
+              end;
+        end;
 
       begin (* extrais_2 *)
-        
+        ClrScr;
+        (* -- reaffiche S_0 *)
+        affiche_S_0;
+
+        (* -- affiche les 12 plans S_1 *)
+        for l_plan_1 := 1 to 12 do
+        begin
+          affiche_motif_1(21 + (l_plan_1 - 1) div 3 * 11, 1 + ((l_plan_1 - 1) mod 3) * 8,
+            g_couche_S_1.plans_1[l_plan_1].motif_1);
+          affiche_sortie_1(l_plan_1);
+        end;
+
+        (* -- affiche le resultat *)
+        affiche_sortie_2(1);
+
+        for l_plan_2 := 1 to 1 do
+        begin
+          for l_y := 1 to k_S_0 - 4 do
+            for l_x := 1 to k_S_0 - 4 do
+            begin
+              affiche_partie_0_en_inverse(l_x, l_y, 5);
+              affiche_partie_plans_1_en_inverse(l_x, l_y);
+
+              filtre_2(l_plan_2, l_x, l_y);
+
+              if (l_x <= 6) and (l_y <= 3)
+                then stoppe;
+
+              affiche_partie_plans_1_en_normal(l_x, l_y);
+              affiche_partie_0_en_normal(l_x, l_y, 5);
+            end;
+        end;
       end;
 
     begin (* analyse_chiffre *)
-      
+      charge_S_0;
+      affiche_S_0;
+
+      extrais_1;
+      extrais_2;
     end;
 
   begin (* go *)
-    
+    FillChar(g_couche_S_1, SizeOf(g_couche_S_1), 0);
+    FillChar(g_couche_S_2, SizeOf(g_couche_S_2), 0);
+
+    entraine_S_1;
+    entraine_S_2;
+
+    analyse_chiffre;
   end;
 
-begin
+procedure initialise;
+  begin
+  end;
+
+begin (* main *)
+  ClrScr;
+  initialise;
+  repeat
+    WriteLn;
+    Write('Go, Quitte ?');
+    g_choix := ReadKey; Write(g_choix); WriteLn;
+    case g_choix of
+      'g': go;
+    end;
+  until g_choix = 'q';
 end.
