@@ -34,3 +34,6 @@ Issue53:
 Issue 54:
  - neo4: neocognitron layer two and three
  - neo51: same as above, but with Graph
+
+Issue 55:
+ - contrep: Back-propagation ? (Hecht Nielsen)
