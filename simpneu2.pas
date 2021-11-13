@@ -152,14 +152,14 @@ procedure propage;
           (* -- calcule l'activation *)
 
           (* -- le biais, egal au coefficient de la fonction objectif *)
-          resultat := biais;
+          l_resultat := biais;
 
           (* -- la somme ponderee des entrees (les sorties de l'iteration precedente) *)
           for l_contrainte := 1 to k_contrainte_max do
-            resultat := resultat + poids[l_contrainte] * g_couche_1[l_contrainte].resultat;
+            l_resultat := l_resultat + poids[l_contrainte] * g_couche_1[l_contrainte].resultat;
 
           (* Xn+1 = Xn - mu * resultat *)
-          resultat := resultat - k_mu * resultat;
+          resultat := resultat - k_mu * l_resultat;
 
           if g_affiche
             then begin
