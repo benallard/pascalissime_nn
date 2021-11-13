@@ -1,4 +1,4 @@
-all: recneur3 retropr2 robotl1 kohonen3 carre3 unun voyage4 art14 bam chiffres bolzdem3 neo31 neo4 neo51 contrep
+all: recneur3 retropr2 robotl1 kohonen3 carre3 unun voyage4 art14 bam chiffres bolzdem3 neo31 neo4 neo51 contrep simpneu2
 
 recneur3: uimpri.o
 retropr2: uimpri.o
@@ -9,6 +9,7 @@ unun: uimpri.o uaffiche.o ustoppe.o
 voyage4: uimpri.o uaffiche.o ustoppe.o
 bam: usortie.o
 chiffres: usortie.o
+simpneu2: uclavier.o uerreur.o
 
 
 %.o: %.pas
@@ -20,4 +21,4 @@ chiffres: usortie.o
 phony: clean all
 
 clean:
-	$(RM) *.o retropr2 recneur3 robotl1 kohonen3 carre3 unun voyage4 art14 bam chiffres bolzdem3 neo31 neo4 neo51 contrep
+	$(RM) *.o retropr2 recneur3 robotl1 kohonen3 carre3 unun voyage4 art14 bam chiffres bolzdem3 neo31 neo4 neo51 contrep simpneu2

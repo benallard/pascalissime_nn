@@ -37,3 +37,6 @@ Issue 54:
 
 Issue 55:
  - contrep: Back-propagation ? (Hecht Nielsen)
+
+Issue 56:
+ - simpneu2: Simplexe solving using neural network.
