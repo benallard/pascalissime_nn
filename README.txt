@@ -40,3 +40,6 @@ Issue 55:
 
 Issue 56:
  - simpneu2: Simplexe solving using neural network.
+
+Issue57:
+ - spattemp: Space temporal analysis.
