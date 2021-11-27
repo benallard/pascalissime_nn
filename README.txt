@@ -43,3 +43,9 @@ Issue 56:
 
 Issue57:
  - spattemp: Space temporal analysis.
+
+Issue 58:
+ - brain4: Associative neural network
+
+Issue 59:
+ - founeu: Fourier transform through neural network
