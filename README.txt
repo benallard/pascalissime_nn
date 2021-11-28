@@ -49,3 +49,6 @@ Issue 58:
 
 Issue 59:
  - founeu: Fourier transform through neural network
+
+Issue 60:
+ - radial: Radial basis function neural network
