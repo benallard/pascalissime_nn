@@ -52,3 +52,6 @@ Issue 59:
 
 Issue 60:
  - radial: Radial basis function neural network
+
+Issue 61:
+ - cascade2: Cascade correlation learning architecture
