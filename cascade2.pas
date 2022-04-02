@@ -94,7 +94,7 @@ procedure presente_exemplaire;
     with g_reseau do
     begin
       (* -- ripe toutes les valeurs d'une periode *)
-      for l_periode := 0 to k_entree - 1 do
+      for l_periode := 0 to k_entree - 2 do
         couche_entree[l_periode] := couche_entree[l_periode + 1];
 
       (* -- la sortie comme derniere entree *)
